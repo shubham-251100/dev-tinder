@@ -1,4 +1,5 @@
 const express = require("express");
+const { adminAuth, userAuth } = require("./middleware/auth");
 
 const PORT = process.env.PORT || 3000;
 
@@ -70,14 +71,7 @@ app.get("/different", (req, res, next) => {
 
 // Middleware
 
-app.use("/admin", (req, res, next) => {
-    const token = "xyz1";
-    if (token !== "xyz") {
-        res.status(401).send("User is not authorized")
-    } else {
-        next();
-    }
-})
+app.use("/admin", adminAuth);
 
 app.get("/admin/addUser", (req, res, next) => {
     res.send("New user added");
@@ -85,7 +79,21 @@ app.get("/admin/addUser", (req, res, next) => {
 
 app.get("/admin/deleteUser", (req, res, next) => {
     res.send("Delete User");
-})
+});
+
+app.get("/user/login", (req, res, next) => {
+    res.send("User came to login");
+});
+
+app.get("/user/data", userAuth, (req, res, next) => {
+    res.send({
+        message: "User is authenticated",
+        data: {
+            type: "User",
+            name: "Shubham"
+        }
+    })
+});
 
 app.get("/user", (req, res) => {
     res.send({
