@@ -18,7 +18,7 @@ app.post("/user", (req, res) => {
     })
 });
 
-app.put("/user/:id", (req, res) => {
+app.put("/user/:id/:name", (req, res) => {
     const qurey = req.query;
     const path = req.path;
     const params = req.params;
@@ -39,6 +39,20 @@ app.put("/user/:id", (req, res) => {
     //     "path": "/user/1",
     //     "params": {
     //         "id": "1"
+    //     }
+    // }
+
+    // PUT: http://localhost:3000/user/1/Sumit?desination=ca
+
+    // {
+    //     "name": "Put Call",
+    //     "qurey": {
+    //         "desination": "ca"
+    //     },
+    //     "path": "/user/1/Sumit",
+    //     "params": {
+    //         "id": "1",
+    //         "name": "Sumit"
     //     }
     // }
 })
