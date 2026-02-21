@@ -4,6 +4,89 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+app.use("/multiRequestHandlers", 
+    (req, res, next) => {
+        console.log("1. First request handler");
+        next();
+    },
+    (req, res, next) => {
+        console.log("2. Second request handler");
+        next();
+    },
+    (req, res, next) => {
+        console.log("3. Second request handler");
+        next();
+    },
+    (req, res, next) => {
+        console.log("4. Second request handler");
+        // next();
+        res.send("This is the final response - 4")
+    },
+)
+
+app.use("/multi", 
+    [
+        (req, res, next) => {
+            console.log("1. Array 1.1");
+            next();
+        },
+        (req, res, next) => {
+            console.log("2. Array 1.2")
+            next();
+        },
+    ],
+    [
+        (req, res, next) => {
+            console.log("3. Array 1.1")
+            next();
+        },
+        (req, res, next) => {
+            console.log("4. Array 1.2")
+            res.send({
+                message: "This is last request handler in 2nd array",
+                data: [
+                    "1 = Success",
+                    "2 = Success",
+                ]
+            });
+        },
+    ],
+)
+
+app.get("/different", (req, res, next) => {
+    console.log("1. First route handler");
+    // res.send({
+    //     message: "First Different route handlers."
+    // });
+    next();
+});
+
+app.get("/different", (req, res, next) => {
+    console.log("2. Second route handler");
+    res.send({
+        message: "Different route handlers."
+    });
+})
+
+// Middleware
+
+app.use("/admin", (req, res, next) => {
+    const token = "xyz1";
+    if (token !== "xyz") {
+        res.status(401).send("User is not authorized")
+    } else {
+        next();
+    }
+})
+
+app.get("/admin/addUser", (req, res, next) => {
+    res.send("New user added");
+});
+
+app.get("/admin/deleteUser", (req, res, next) => {
+    res.send("Delete User");
+})
+
 app.get("/user", (req, res) => {
     res.send({
         name: "Shubham Rawat",
@@ -73,7 +156,6 @@ app.use("/signup", (req, res) => {
 app.use("/", (req, res) => {
     res.send("I am express server");
 });
-
 
 app.listen(PORT, () => {
     console.log("App is running in the PORT ", PORT);
