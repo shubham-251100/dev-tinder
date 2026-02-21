@@ -161,9 +161,32 @@ app.use("/signup", (req, res) => {
     res.send("I am signup page")
 })
 
-app.use("/", (req, res) => {
+// app.use("/", (req, res) => {
+//     res.send("I am express server");
+// });
+
+app.get("/app", (req, res, next) => {
+    throw Error("Error from /app");
+    res.send("Hi from /app route");
+})
+
+app.use("/", (err, req, res, next) => {
+    if (err) {
+        // console.log("______________Error________________", err);
+        res.status(500).send("Something went wrong");
+    }
     res.send("I am express server");
-});
+})
+
+app.get("/app1", (req, res, next) => {
+    try {
+        throw Error("Error Happened");
+        res.send("Hi from /app1 route")
+    } catch (err) {
+        // console.log("______________Error________________", err);
+        res.status(500).send("Something went wrong");
+    }
+})
 
 app.listen(PORT, () => {
     console.log("App is running in the PORT ", PORT);
